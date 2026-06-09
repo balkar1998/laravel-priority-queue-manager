@@ -1,0 +1,45 @@
+{
+    "name": "balkar/laravel-priority-queue-manager",
+    "description": "Dispatch and manage Laravel jobs with priority levels — critical, high, normal, low.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["laravel", "queue", "priority", "jobs", "worker"],
+    "authors": [
+        {
+            "name": "Balkar Singh",
+            "email": "your@email.com",
+            "homepage": "https://balkar.co.in"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^10.0|^11.0|^12.0",
+        "illuminate/queue": "^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0",
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Balkar\\PriorityQueue\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Balkar\\PriorityQueue\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Balkar\\PriorityQueue\\PriorityServiceProvider"
+            ],
+            "aliases": {
+                "Priority": "Balkar\\PriorityQueue\\Facades\\Priority"
+            }
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
