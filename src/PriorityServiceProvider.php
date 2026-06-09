@@ -19,6 +19,10 @@ class PriorityServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../config/priority-queue.php' => config_path('priority-queue.php'),
             ], 'priority-queue-config');
+
+            $this->commands([
+                \Balkar\PriorityQueue\Commands\PriorityQueueStatusCommand::class,
+            ]);
         }
     }
 }
