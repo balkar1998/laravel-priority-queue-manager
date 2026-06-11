@@ -13,7 +13,7 @@ A Laravel package to dispatch and manage jobs across priority queues — **criti
 
 ## The Problem
 
-Laravel's default queue is first-in, first-out. If 500 newsletter jobs are queued ahead of an OTP job, your user waits 30 seconds on the login screen. There's no built-in concept of "this job is more important than that one."
+Laravel's default queue is first-in, first-out. If 500 newsletter jobs are queued ahead of an OTP job, your user waits 30 seconds on the login screen. Laravel supports named queues natively, but using them across a team without a shared standard leads to inconsistent queue names, forgotten ->onQueue() calls, and no visibility into queue health without raw DB queries."
 
 ## The Solution
 
@@ -69,7 +69,10 @@ return [
 ```
 
 Adjust workers, retry timing, and max tries per priority level to match your app's needs.
-
+Note: the `workers` value is a reference guide only. 
+You are responsible for starting the actual worker 
+processes via Supervisor, your deployment script, 
+or manually.
 ---
 
 ## Usage
@@ -100,13 +103,14 @@ Laravel will always drain the `critical` queue first before moving to `high`, an
 For high-traffic apps, run separate workers per queue:
 
 ```bash
-# Terminal 1 — 3 workers for critical
-php artisan queue:work --queue=critical &
-php artisan queue:work --queue=critical &
-php artisan queue:work --queue=critical &
+For production, use Supervisor to manage multiple workers. 
+Example Supervisor config for critical queue:
 
-# Terminal 2 — 1 worker for low priority
-php artisan queue:work --queue=low
+[program:critical-worker]
+command=php /var/www/artisan queue:work --queue=critical --tries=5
+numprocs=3
+autostart=true
+autorestart=true
 ```
 
 ---
@@ -141,7 +145,7 @@ Status levels:
 
 ## Real World Example
 
-This package was born from a real production problem — a student grade calculation engine that processed recursive async jobs across thousands of students. Critical recalculations (triggered by exam updates) were getting stuck behind bulk report generation jobs.
+At my previous company, critical grade recalculations were getting stuck behind bulk report jobs. This package came out of fixing that.
 
 ```php
 // Exam result updated — must recalculate immediately
